@@ -1,4 +1,5 @@
 require 'hand'
+require 'colorize'
 
 describe Hand do
   let(:hand) {Hand.new}
@@ -10,6 +11,11 @@ describe Hand do
   it "recieves cards" do
     hand.add_card(double)
     expect(hand.card_count).to eq(1)
+  end
+
+  it "raises an error if it's full" do
+    5.times { hand.add_card(double) }
+    expect { hand.add_card(double) }.to raise_error("Hand full")
   end
 
   it "can empty itself" do
@@ -25,7 +31,7 @@ describe Hand do
   end
 
   it "can score itself" do
-    c1 = double(:suit => :H, :value => 7)
+    c1 = instance_double("Card", :suit => :H, :value => 7)
     c2 = double(:suit => :H, :value => 9)
     c3 = double(:suit => :H, :value => 10)
     c4 = double(:suit => :H, :value => 11)
@@ -50,6 +56,22 @@ describe Hand do
     hand.add_card(c4)
     hand.add_card(c5)
     expect(hand.get_score).to eq(-2)
+  end
+
+  it "can output a usable string of cards" do
+    hand.add_card(instance_double("Card", :to_s => " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white)))
+    hand.add_card(instance_double("Card", :to_s => " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white)))
+    hand.add_card(instance_double("Card", :to_s => " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white)))
+    hand.add_card(instance_double("Card", :to_s => " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white)))
+    hand.add_card(instance_double("Card", :to_s => " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white)))
+    hand.drop_card(2)
+    hand.drop_card(4)
+    result_string = " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white) + "  " +
+    "     " + "  " +
+    " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white) + "  " +
+    "     " + "  " +
+    " #{"\u2660".encode("utf-8")} A ".colorize(:color => :black, :background => :white) + "  "
+    expect(hand.to_s).to eq(result_string)
   end
 
   # if all passed

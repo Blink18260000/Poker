@@ -4,10 +4,24 @@ class Hand
     @card_arr = [nil, nil, nil, nil, nil]
   end
 
+  def to_s
+    out_string = ""
+    @card_arr.each do |card|
+      if card
+        out_string.concat(card.to_s + "  ")
+      else
+        out_string.concat("       ")
+      end
+    end
+    out_string
+  end
+
   def add_card(card)
     ind = 0
     ind += 1 until @card_arr[ind].nil?
+    raise "Hand full" if ind == 5
     @card_arr[ind] = card
+    self
   end
 
   def drop_card(index)
@@ -41,6 +55,7 @@ class Hand
     straight = is_straight?
     pairs = pairs?
 
+    return 45 if pairs.size == 1 && pairs[0][1] == 5
     return 44 if flush && straight
     return 31 + pairs[0][0] - 2 if pairs.size == 1 && pairs[0][1] == 4
     return 30 if pairs.size == 2 && (pairs[0][1] + pairs[1][1]) == 5
@@ -111,6 +126,11 @@ class Hand
 
   def <=>(arg1)
     raise "Invalid comparison: not a hand" unless arg1.is_a?(Hand)
+  end
+
+  def cheat
+    @card_arr = []
+    5.times { @card_arr << Card.new(:S, 14) }
   end
 
 end

@@ -11,7 +11,7 @@ describe Card do
     expect(card.value).to eq(2)
   end
 
-  it "returns a good looking card" do
+  it "returns a great looking card" do
     expect(card.to_s).to eq(" #{"\u2665".encode("utf-8")} 2 ".colorize(:color => :red, :background => :white))
   end
 end
